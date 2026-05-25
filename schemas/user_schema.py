@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, EmailStr
-from datetime import datetime
+from pydantic import BaseModel, Field, EmailStr, PastDatetime
+from datetime import datetime, timezone
 
 class UserCreate(BaseModel):
     name: str = Field(max_length=50)
@@ -9,6 +9,6 @@ class UserCreate(BaseModel):
 class UserInfo(BaseModel):
     name: str
     email: EmailStr
-    created_on : datetime
+    created_on : PastDatetime
     role: str
 

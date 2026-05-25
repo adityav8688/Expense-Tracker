@@ -2,7 +2,7 @@ from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from models.users import Users
+from models.users_model import Users
 from utils.hashing import hash_password, verify_pass
 from core.security import create_access_token
 

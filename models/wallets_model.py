@@ -15,7 +15,7 @@ class Wallets(Base):
     name = Column(String)
     balance = Column(Float)
     currency = Column(String)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     user = relationship("Users", back_populates="wallets")
     transaction = relationship("Transactions", back_populates="wallet")

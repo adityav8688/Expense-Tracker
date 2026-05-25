@@ -25,7 +25,7 @@ class Transactions(Base):
     title = Column(String)
     description = Column(String)
     transaction_date = Column(DateTime)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     user = relationship("Users", back_populates="transaction")
     category = relationship("Categories", back_populates="transaction")

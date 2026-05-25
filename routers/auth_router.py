@@ -3,8 +3,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import Annotated
 
-from models.users import Users
-from schemas.user import UserCreate, UserInfo
+from models.users_model import Users
+from schemas.user_schema import UserCreate, UserInfo
 from app.database import get_db
 from services.auth_services import create_user, authenticate_user
 from core.security import require_role

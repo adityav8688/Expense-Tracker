@@ -21,7 +21,7 @@ class Categories(Base):
     type = Column(SQLEnum(type), default=type.INCOME)
     color = Column(String)
     icon = Column(String)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
     user = relationship("Users", back_populates="categories")
     transaction = relationship("Transactions", back_populates="category")

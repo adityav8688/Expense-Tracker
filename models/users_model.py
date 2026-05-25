@@ -20,8 +20,8 @@ class Users(Base):
     name = Column("name", String)
     email = Column("email", String, unique=True, nullable=False)
     password = Column("password", String, nullable=False)
-    created_on = Column("created_on", DateTime, default=datetime.now(timezone.utc))
-    logged_on = Column("logged_on", DateTime, default=datetime.now(timezone.utc))
+    created_on = Column("created_on", DateTime(timezone=True), default=datetime.now(timezone.utc))
+    logged_on = Column("logged_on", DateTime(timezone=True), default=datetime.now(timezone.utc))
     role = Column("role", String, default=UserRole.USER)
 
     categories = relationship("Categories", back_populates="user")
