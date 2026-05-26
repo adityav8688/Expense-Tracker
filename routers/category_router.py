@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from models.categories_model import Categories
 from app.database import get_db
 from core.security import require_role
+from models.categories_model import Categories
 from schemas.category_schema import CategoryInfo, CreateCategory
 from services.category_services import *
 
