@@ -4,7 +4,7 @@ from sqlalchemy import (
     Float
 )
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.core.database import Base
 from datetime import datetime, timezone
 from enum import Enum
 

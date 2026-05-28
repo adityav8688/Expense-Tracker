@@ -1,21 +1,22 @@
 from jose import jwt, JWTError
 from jose.exceptions import ExpiredSignatureError
-from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
-from app.config.settings import settings
+from app.core.config import settings
 from datetime import datetime, timezone, timedelta
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
-def create_access_token(data: dict):
+#creates token for user
+async def create_access_token(data: dict):
     encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(hours=2)
     encode.update({"exp":expire})
     return jwt.encode(encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-def get_current_user(
+#used for user authorization
+async def get_current_user(
         token: str = Depends(oauth2_scheme)
     ):
     try:
@@ -33,6 +34,7 @@ def get_current_user(
         "role" : user_role
     }
 
+#used for role authorization
 def require_role(req_role: str):
     
     def role_checker(current_user = Depends(get_current_user)):
