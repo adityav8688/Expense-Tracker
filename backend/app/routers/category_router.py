@@ -11,28 +11,17 @@ category_router = APIRouter(prefix="/category")
 
 @category_router.get("/", response_model=list[CategoryInfo])
 async def category_list(db: Session = Depends(get_db), role = Depends(require_role("user"))):
-    try:
-        return await fetch_categories(db, int(role["user_id"]))
-    except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+    return await fetch_categories(db, int(role["user_id"]))
 
 @category_router.post("/")
 async def add_category(category: CreateCategory, db: Session = Depends(get_db), role = Depends(require_role("user"))):
-    try:
-        return await create_category(category, db, int(role["user_id"]))
-    except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+    return await create_category(category, db, int(role["user_id"]))
 
-@category_router.put("/{id}")
-async def put_category(category: CreateCategory, category_id = id, db: Session = Depends(get_db), role = Depends(require_role("user"))):
-    try:
-        return await edit_category(category, int(category_id), db, int(role["user_id"]))
-    except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+
+@category_router.patch("/{id}")
+async def put_category(category: CategoryInfo, id: int, db: Session = Depends(get_db), role = Depends(require_role("user"))):
+    return await edit_category(category, id, db, int(role["user_id"]))
 
 @category_router.delete("/{id}")
-async def delete_category(category_id = id, db: Session = Depends(get_db), role = Depends(require_role("user"))):
-    try:
-        return await remove_category(int(category_id), db, int(role["user_id"]))
-    except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+async def delete_category(id: int, db: Session = Depends(get_db), role = Depends(require_role("user"))):
+    return await remove_category(id, db, int(role["user_id"]))

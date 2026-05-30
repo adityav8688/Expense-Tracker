@@ -15,8 +15,7 @@ class TransactionInfo(BaseModel):
     transaction_date: date | None
 
 class CreateTransaction(BaseModel):
-    category_id: int
-    wallet_id: int
+    type: str
     amount: float
     title: str
     description: str | None
