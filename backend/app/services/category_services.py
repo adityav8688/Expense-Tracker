@@ -1,11 +1,12 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import select
+from sqlalchemy import select, func, delete
 from datetime import datetime, timezone
 from typing import Annotated
 
 from app.models.categories_model import Categories
+from app.models.transactions_model import Transactions
 from app.schemas.category_schema import CreateCategory, CategoryInfo
 
 async def fetch_categories(db: AsyncSession, uid:int):
@@ -65,13 +66,27 @@ async def edit_category(category: CategoryInfo, category_id: int, db: AsyncSessi
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Exception {str(e)}")
 
-async def remove_category(category_id: int, db: AsyncSession, uid: int):
+async def remove_category(category_id: int, db: AsyncSession, uid: int, force: bool):
     try:       
         query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.id == category_id))
         ex_category = query.scalar_one_or_none()
 
         if not ex_category:
-            raise HTTPException(status_code=400, detail="There is no category to delete")
+            raise HTTPException(status_code=400, detail="There is no category to delete.")
+        
+        t_query = await db.execute(select(func.count()).select_from(Transactions).where(Transactions.user_id == uid, Transactions.category_id == ex_category.id))
+        ex_transactions = t_query.scalar()
+
+        if ex_transactions > 0 and not force:
+            raise HTTPException(status_code=409, detail={
+                    "message": f"Category contains {ex_transactions} transactions.",
+                    "requires_confirmation": True
+                }
+            )
+
+        if ex_transactions > 0 and force:
+            await db.execute(delete(Transactions).where(Transactions.user_id == uid, Transactions.category_id == category_id))
+        
         
         await db.delete(ex_category)
         await db.commit()

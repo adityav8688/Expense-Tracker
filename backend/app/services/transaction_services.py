@@ -18,13 +18,13 @@ async def list_transactions(db: AsyncSession, uid: int):
 
 async def create_transaction(transaction: CreateTransaction, db: AsyncSession, uid: int):
     try:
-        c_query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.id == transaction.category_id))
-        w_query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.id == transaction.wallet_id))
+        c_query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.name == transaction.category))
+        w_query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.name == transaction.wallet))
         category = c_query.scalar_one_or_none()
         wallet = w_query.scalar_one_or_none()
 
         if not category:
-            raise HTTPException(status_code=404, detail="Category Not Found")
+            raise HTTPException(status_code=404, detail="Category not found")
 
         if not wallet:
             raise HTTPException(status_code=404, detail="Wallet Not Found")
@@ -55,6 +55,9 @@ async def create_transaction(transaction: CreateTransaction, db: AsyncSession, u
     except SQLAlchemyError as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    except (AttributeError,ValueError,TypeError) as e :
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 async def update_transaction(id: int, transaction_update: UpdateTransaction, db: AsyncSession, uid: int):
     try:
@@ -64,17 +67,17 @@ async def update_transaction(id: int, transaction_update: UpdateTransaction, db:
         if not ex_transaction:
             raise HTTPException(status_code=404, detail="Transaction not found")
         
-        if transaction_update.category_id:
-            c_query = await db.execute(select(Categories).where(Categories.id == transaction_update.category_id))
-            category = c_query.scalar_one_or_none()
-            if not category:
-                raise HTTPException(status_code=404, detail="Category not found")
+        # if transaction_update.category:
+        #     c_query = await db.execute(select(Categories).where(Categories.name == transaction_update.category))
+        #     category = c_query.scalar_one_or_none()
+        #     if not category:
+        #         raise HTTPException(status_code=404, detail="Category not found")
         
-        if transaction_update.wallet_id:
-            w_query = await db.execute(select(Wallets).where(Wallets.id == transaction_update.wallet_id))
-            wallet = w_query.scalar_one_or_none()
-            if not wallet:
-                raise HTTPException(status_code=404, detail="wallet not found")
+        # if transaction_update.wallet:
+        #     w_query = await db.execute(select(Wallets).where(Wallets.name == transaction_update.wallet))
+        #     wallet = w_query.scalar_one_or_none()
+        #     if not wallet:
+        #         raise HTTPException(status_code=404, detail="wallet not found")
             
         update_data = transaction_update.model_dump(exclude_unset=True)
 

@@ -23,5 +23,5 @@ async def put_category(category: CategoryInfo, id: int, db: Session = Depends(ge
     return await edit_category(category, id, db, int(role["user_id"]))
 
 @category_router.delete("/{id}")
-async def delete_category(id: int, db: Session = Depends(get_db), role = Depends(require_role("user"))):
-    return await remove_category(id, db, int(role["user_id"]))
+async def delete_category(id: int, db: Session = Depends(get_db), role = Depends(require_role("user")), force: bool = False):
+    return await remove_category(id, db, int(role["user_id"]), force)

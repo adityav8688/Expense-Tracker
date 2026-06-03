@@ -15,6 +15,8 @@ class TransactionInfo(BaseModel):
     transaction_date: date | None
 
 class CreateTransaction(BaseModel):
+    category: Optional[str | None] = None
+    wallet: str
     type: str
     amount: float
     title: str
@@ -22,8 +24,8 @@ class CreateTransaction(BaseModel):
     transaction_date: Optional[date] = None
 
 class UpdateTransaction(BaseModel):
-    category_id: Optional[int] = None
-    wallet_id: Optional[int] = None
+    # category: Optional[str] = None
+    # wallet: Optional[str] = None
     amount: Optional[float] = None
     title: Optional[str] = None
     description: Optional[str] = None

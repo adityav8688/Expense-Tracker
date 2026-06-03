@@ -1,11 +1,12 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
 
 from app.models.users_model import Users
 from app.models.wallets_model import Wallets
+from app.models.transactions_model import Transactions
 from app.schemas.wallet_schema import CreateWallet, UpdateWallet
 
 async def wallets_list(db: AsyncSession, uid: int):
@@ -85,14 +86,25 @@ async def update_wallet(wallet: UpdateWallet, id: int, db: AsyncSession, uid: in
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
-async def remove_wallet(id: int, db: AsyncSession, uid: int):
+async def remove_wallet(id: int, db: AsyncSession, uid: int, force: bool):
     try:
         query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.id == id))
         del_wallet = query.scalar_one_or_none()
 
         if not del_wallet:
             raise HTTPException(status_code=404, detail=f"There is no record to delete at {uid}")
-        
+
+        t_query = await db.execute(select(func.count()).select_from(Transactions).where(Transactions.user_id == uid, Transactions.wallet_id == id))
+        ex_transactions = t_query.scalar()
+
+        if ex_transactions > 0 and not force:
+            raise HTTPException(status_code=409, detail={
+                "message": f"Wallet contains {ex_transactions} transactions.",
+                "requires_confirmation": True
+            })
+        elif ex_transactions > 0 and force:
+            await db.execute(delete(Transactions).where(Transactions.user_id == uid, Transactions.wallet_id == id))
+
         await db.delete(del_wallet)
         await db.commit()
 

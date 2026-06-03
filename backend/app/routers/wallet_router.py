@@ -25,6 +25,6 @@ async def put_wallet(wallet: UpdateWallet, id: int, db: Session = Depends(get_db
     return await update_wallet(wallet, id, db, int(role["user_id"]))
     
 @wallet_router.delete("/{id}")
-async def delete_wallet(del_id = id, db: Session = Depends(get_db), role = Depends(require_role("user"))):
-    return await remove_wallet(del_id, db, int(role["user_id"]))
+async def delete_wallet(id: int, db: Session = Depends(get_db), role = Depends(require_role("user")), force: bool = False):
+    return await remove_wallet(id, db, int(role["user_id"]), force)
     
