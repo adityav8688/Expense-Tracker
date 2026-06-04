@@ -1,0 +1,17 @@
+body{
+    box-sizing: border-box;
+}
+.login-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30vh;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+}
+form * {
+    margin: 0.5rem;
+}
