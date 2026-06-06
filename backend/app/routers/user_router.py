@@ -23,16 +23,12 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 @user_router.post("/login")
 async def login_user(user: Annotated[OAuth2PasswordRequestForm, Depends()], db: AsyncSession = Depends(get_db)):
-    try:
-        token = await authenticate_user(user.username, user.password, db)
+    token = await authenticate_user(user.username, user.password, db)
 
-        return {
-            "access_token": token,
-            "token_type": "bearer"
-            }
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+        }
 
 @user_router.get("/admin", response_model=list[UserInfo])
 async def admin_dashboard(db: AsyncSession=Depends(get_db),curren_user = Depends(require_role("admin"))):
