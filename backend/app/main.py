@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.core.database import Base, engine
 from app.routers.user_router import user_router
 from app.routers.category_router import category_router
@@ -6,6 +8,14 @@ from app.routers.wallet_router import wallet_router
 from app.routers.transaction_router import transaction_router
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    all_origins=["*"],
+    all_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(user_router)
 app.include_router(category_router)
