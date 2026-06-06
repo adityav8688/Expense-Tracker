@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+import { LoginAuth } from '../api/login-api';
 import './login.css'
 
 function loginReq(username, password){
@@ -9,9 +12,15 @@ function loginReq(username, password){
 export default function Login() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        loginReq(username,password)
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        let response = await LoginAuth(username,password)
+
+        if (response?.access_token){
+            navigate("/transactions");
+        }
     }
 
     return (
@@ -20,7 +29,7 @@ export default function Login() {
                 <label >Username: 
                     <input 
                         type="email"
-                        placeholder="Enter email"
+                        placeholder="Enter Email"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
