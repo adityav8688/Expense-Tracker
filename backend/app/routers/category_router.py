@@ -9,7 +9,7 @@ from app.services.category_services import *
 
 category_router = APIRouter(prefix="/category")
 
-@category_router.get("/", response_model=list[CategoryInfo])
+@category_router.get("/")
 async def category_list(db: Session = Depends(get_db), role = Depends(require_role("user"))):
     return await fetch_categories(db, int(role["user_id"]))
 

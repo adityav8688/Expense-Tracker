@@ -12,7 +12,7 @@ from app.schemas.wallet_schema import CreateWallet, UpdateWallet
 async def wallets_list(db: AsyncSession, uid: int):
     try:
         query = await db.execute(select(Wallets).where(Wallets.user_id == uid))
-        wallets = query.scalar_one_or_none()
+        wallets = query.scalars().all()
 
         return wallets
     except (SQLAlchemyError) as e:

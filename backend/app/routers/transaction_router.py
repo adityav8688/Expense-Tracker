@@ -12,7 +12,7 @@ class details():
     db: AsyncSession = Depends(get_db)
     role: dict = Depends(require_role("user"))
 
-@transaction_router.get("/", response_model=list[TransactionInfo])
+@transaction_router.get("/")
 async def get_transactions(db = details.db , role = details.role):
     return await list_transactions(db, int(role["user_id"]))
 

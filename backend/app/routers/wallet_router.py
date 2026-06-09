@@ -8,7 +8,7 @@ from app.schemas.wallet_schema import CreateWallet, UpdateWallet
 
 wallet_router = APIRouter(prefix="/wallet")
 
-@wallet_router.get("/", response_model=list[CreateWallet])
+@wallet_router.get("/")
 async def get_wallets(db: Session = Depends(get_db), role = Depends(require_role("user"))):
     return await wallets_list(db, int(role["user_id"]))
     
