@@ -49,15 +49,4 @@ export async function LoginAuth(username, password){
     }
 }
 
-export async function GetTransactions(){
-    try{
-        const response = await api.get(
-            "/transaction"
-        )
-        return response.data
-    } catch (error) {
-        console.log("Error", error);
-        console.log("Status Code", error.response?.status);
-        console.log("Details", error.response?.data)
-    }
-}
+export { api };
