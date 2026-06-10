@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import select
 from typing import Annotated
 
 from app.models.users_model import Users
@@ -33,7 +34,8 @@ async def login_user(user: Annotated[OAuth2PasswordRequestForm, Depends()], db: 
 @user_router.get("/admin", response_model=list[UserInfo])
 async def admin_dashboard(db: AsyncSession=Depends(get_db),curren_user = Depends(require_role("admin"))):
     try:
-        users = db.query(Users).all()
+        query = await db.execute(select(Users))
+        users = query.scalars().all()
         return users
-    except Exception as e:
+    except SQLAlchemyError as e:
         print(str(e))
