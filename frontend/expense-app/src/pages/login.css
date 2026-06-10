@@ -1,7 +1,7 @@
 body{
     box-sizing: border-box;
 }
-.login-form{
+.user-form{
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
 import { GetWallets } from "../api/Wallets-api";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Wallets(){
     const [data, setData] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchWallets() {
@@ -15,6 +20,7 @@ export default function Wallets(){
 
     return(
         <>
+            <button onClick={() => navigate("/add_wallet")} >+ Add</button>
             <table>
                 <tbody>
                     <tr>

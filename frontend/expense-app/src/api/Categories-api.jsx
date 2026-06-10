@@ -12,3 +12,4 @@ export async function GetCategories() {
         console.log("Details: ", error.response?.data);
     }
 }
+

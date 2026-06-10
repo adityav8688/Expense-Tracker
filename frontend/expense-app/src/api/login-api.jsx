@@ -19,6 +19,23 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if(error.response?.status === 401 && localStorage.token){
+            localStorage.removeItem("token");
+
+            sessionStorage.setItem(
+                "authError",
+                "Session expired. Please login again."
+            );
+
+            window.location.href = "/";
+        }
+        return Promise.reject(error);
+    }
+);
+
 export async function LoginAuth(username, password){
 
     const formData = new URLSearchParams();
@@ -43,9 +60,33 @@ export async function LoginAuth(username, password){
         return response.data;
 
     } catch (error) {
+        throw error;
         console.log("Error: ", error);
         console.log("Status: ", error.response?.status);
         console.log("Data: ", error.response?.data);
+    }
+}
+
+export async function CreateUser(name, email, password) {
+
+    const formData = new URLSearchParams();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+
+    try{
+
+        const response = await api.post(
+            "/register",
+            {name, email, password},
+        );
+
+        if (response?.status === 200){
+            return (true)
+        }
+
+    }catch(error){
+        throw error;
     }
 }
 
