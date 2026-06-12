@@ -18,27 +18,6 @@ async def wallets_list(db: AsyncSession, uid: int):
     except (SQLAlchemyError) as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-async def wallet_info(id: int, db: AsyncSession, uid: int):
-    try:
-        query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.id == id))
-        wallet = query.scalar_one_or_none()
-
-        if not wallet: 
-            raise HTTPException(status_code=404, detail="some error...")
-        
-        u_query = await db.execute(select(Users).where(Users.id == wallet.user_id))
-        user = u_query.scalar_one_or_none()
-
-        return { 
-            "User Name": user.name,
-            "Wallet Name": wallet.name,
-            "balance" : wallet.balance,
-            "currency" : wallet.currency,
-            "created at" : wallet.created_at
-        }
-    except(SQLAlchemyError) as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 async def create_wallet(wallet: CreateWallet, db: AsyncSession, uid: int):
     try:
         query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.name == wallet.name))
@@ -58,9 +37,31 @@ async def create_wallet(wallet: CreateWallet, db: AsyncSession, uid: int):
         await db.commit()
         await db.refresh(add_wallet)
 
-        return wallet
+        return add_wallet
     except (SQLAlchemyError) as e:
         await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+"""
+async def wallet_info(id: int, db: AsyncSession, uid: int):
+    try:
+        query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.id == id))
+        wallet = query.scalar_one_or_none()
+
+        if not wallet: 
+            raise HTTPException(status_code=404, detail="some error...")
+        
+        u_query = await db.execute(select(Users).where(Users.id == wallet.user_id))
+        user = u_query.scalar_one_or_none()
+
+        return { 
+            "User Name": user.name,
+            "Wallet Name": wallet.name,
+            "balance" : wallet.balance,
+            "currency" : wallet.currency,
+            "created at" : wallet.created_at
+        }
+    except(SQLAlchemyError) as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 async def update_wallet(wallet: UpdateWallet, id: int, db: AsyncSession, uid: int):
@@ -85,6 +86,7 @@ async def update_wallet(wallet: UpdateWallet, id: int, db: AsyncSession, uid: in
     except (SQLAlchemyError) as e: 
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+"""
 
 async def remove_wallet(id: int, db: AsyncSession, uid: int, force: bool):
     try:
@@ -102,6 +104,7 @@ async def remove_wallet(id: int, db: AsyncSession, uid: int, force: bool):
                 "message": f"Wallet contains {ex_transactions} transactions.",
                 "requires_confirmation": True
             })
+        
         elif ex_transactions > 0 and force:
             await db.execute(delete(Transactions).where(Transactions.user_id == uid, Transactions.wallet_id == id))
 
