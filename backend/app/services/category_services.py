@@ -29,19 +29,18 @@ async def create_category(category: CreateCategory, db: AsyncSession, uid: int):
             user_id = uid,
             name = category.name,
             type = category.type,
-            color = category.color,
-            icon = category.icon
         )
 
         db.add(add_category)
         await db.commit()
         await db.refresh(add_category)
         
-        return category
+        return add_category
     except (SQLAlchemyError) as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+"""
 async def edit_category(category: CategoryInfo, category_id: int, db: AsyncSession, uid: int):
     try:
         query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.id == category_id))
@@ -49,6 +48,13 @@ async def edit_category(category: CategoryInfo, category_id: int, db: AsyncSessi
 
         if not ex_category:
             raise HTTPException(status_code=404, detail="there is no catogory with this uid")
+        
+        if ex_category:
+            tQuery = await db.execute(select(Transactions).where(Transactions.category_id == ex_category.id))
+            trans = tQuery.scalars().all()
+
+            for tran in trans:
+                tran.type = ex_category.type
 
         updated_data = category.model_dump(exclude_unset=True)
         for key, value in updated_data.items():
@@ -65,7 +71,12 @@ async def edit_category(category: CategoryInfo, category_id: int, db: AsyncSessi
     except SQLAlchemyError as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Exception {str(e)}")
+"""
 
+"""
+The category will be deleted only if it has no associated transactions. 
+Deleting a category with associated transactions requires user confirmation.
+"""
 async def remove_category(category_id: int, db: AsyncSession, uid: int, force: bool):
     try:       
         query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.id == category_id))
@@ -86,7 +97,6 @@ async def remove_category(category_id: int, db: AsyncSession, uid: int, force: b
 
         if ex_transactions > 0 and force:
             await db.execute(delete(Transactions).where(Transactions.user_id == uid, Transactions.category_id == category_id))
-        
         
         await db.delete(ex_category)
         await db.commit()

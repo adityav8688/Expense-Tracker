@@ -17,5 +17,5 @@ class CategoryInfo(BaseModel):
 class CreateCategory(BaseModel):
     name: str
     type: exptype
-    color: str|None
-    icon: str|None
+    color: Optional[str | None] = "blue"
+    icon: Optional[str | None] = "something"
