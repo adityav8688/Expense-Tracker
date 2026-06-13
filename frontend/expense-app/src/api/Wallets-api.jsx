@@ -24,5 +24,6 @@ export async function  SetWallet(data) {
         console.log("Error: ", error);
         console.log("Status: ", error.response?.status);
         console.log("details :", error.response?.data);
+        throw (error)
     }
 }

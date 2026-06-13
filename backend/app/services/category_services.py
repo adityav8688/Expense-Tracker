@@ -19,7 +19,7 @@ async def fetch_categories(db: AsyncSession, uid:int):
 
 async def create_category(category: CreateCategory, db: AsyncSession, uid: int):
     try:
-        query = await db.execute(select(Categories).where(Categories.name == category.name, Categories.type == category.type))
+        query = await db.execute(select(Categories).where(Categories.name == category.name, Categories.type == category.type, Categories.user_id == uid))
         ex_category = query.scalar_one_or_none()
 
         if ex_category:
@@ -101,6 +101,6 @@ async def remove_category(category_id: int, db: AsyncSession, uid: int, force: b
         await db.delete(ex_category)
         await db.commit()
 
-        return ex_category
+        return {"detail": "Category deleted."}
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))

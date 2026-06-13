@@ -88,6 +88,10 @@ async def update_wallet(wallet: UpdateWallet, id: int, db: AsyncSession, uid: in
         raise HTTPException(status_code=500, detail=str(e))
 """
 
+"""
+The wallet will be deleted only if it has no associated transactions. 
+Deleting a wallet with associated transactions requires user confirmation.
+"""
 async def remove_wallet(id: int, db: AsyncSession, uid: int, force: bool):
     try:
         query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.id == id))

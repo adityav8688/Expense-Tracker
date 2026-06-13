@@ -9,14 +9,14 @@ export default function AddWallet() {
 
     const navigate = useNavigate();
 
-    async function handleSubmit() {
+    const handleSubmit = async () => {
         const data = {"name": name, "balance": parseFloat(balance) , "currency": currency}
-        SetWallet(data);
+        await SetWallet(data);
     }
 
     return(
         <>
-            <form onSubmit={() => handleSubmit()}>
+            <form onSubmit={handleSubmit}>
                 <label>Name:
                     <input 
                     type="text"
