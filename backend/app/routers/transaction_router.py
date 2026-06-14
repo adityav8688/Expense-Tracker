@@ -20,9 +20,9 @@ async def get_transactions(db = details.db , role = details.role):
 async def post_transaction(transaction: CreateTransaction, db = details.db, role = details.role):
     return await create_transaction(transaction, db, int(role["user_id"]))
 
-@transaction_router.patch("/{id}")
-async def patch_transaction(id: int , transaction_update: UpdateTransaction, db = details.db, role = details.role):
-    return await update_transaction(int(id), transaction_update, db, int(role["user_id"]))
+# @transaction_router.patch("/{id}")
+# async def patch_transaction(id: int , transaction_update: UpdateTransaction, db = details.db, role = details.role):
+#     return await update_transaction(int(id), transaction_update, db, int(role["user_id"]))
 
 @transaction_router.delete("/{id}")
 async def delete_transaction(id: int, db = details.db, role = details.role):

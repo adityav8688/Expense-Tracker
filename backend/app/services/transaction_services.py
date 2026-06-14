@@ -59,6 +59,7 @@ async def create_transaction(transaction: CreateTransaction, db: AsyncSession, u
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
+"""
 async def update_transaction(id: int, transaction_update: UpdateTransaction, db: AsyncSession, uid: int):
     try:
         query = await db.execute(select(Transactions).where(Transactions.user_id == uid, Transactions.id == id))
@@ -91,6 +92,7 @@ async def update_transaction(id: int, transaction_update: UpdateTransaction, db:
     except SQLAlchemyError as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+"""
 
 async def remove_transaction(id: int, db: AsyncSession, uid: int):
     try:
