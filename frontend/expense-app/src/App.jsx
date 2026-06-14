@@ -9,6 +9,7 @@ import Wallets from './pages/Wallets'
 import AddWallet from './pages/add_wallet'
 import Register from './pages/Register'
 import AddCategory from './pages/AddCategory'
+import AddTransaction from './pages/AddTransaciton'
 import './App.css'
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route path='/wallets' element={<Wallets/>} />
         <Route path='/add_wallet' element={<AddWallet />} />
         <Route path='/add_category' element={<AddCategory/>} />
+        <Route path='add_transaction' element={<AddTransaction />} />
       </Route>
     </Routes>
     </>

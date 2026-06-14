@@ -11,15 +11,20 @@ export default function Categories() {
     const handleDelete = async (category) => {
 
         const result = await DelCategory(category.id, force);
-        const msg = result.detail?.message || result.detail;
+        // const msg = result.detail?.message || result.detail;
+
+        //need to check here later.
+        if (result?.status === 409){
+            const con = confirm(`${result?.data?.detail?.message} `);
+            if (con) {
+                setForce(con);
+                await DelCategory(category.id, force);
+            }
+        }
 
         const updateData = await GetCategories();
         setData(updateData);
 }
-
-    const handleAdd = async () => {
-        const result = await AddCategory();
-    }
 
     useEffect(() => {
         async function  fetchCategories() {

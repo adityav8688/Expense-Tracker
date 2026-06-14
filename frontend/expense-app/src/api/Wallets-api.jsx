@@ -1,6 +1,12 @@
 import { data } from "react-router-dom";
 import { api } from "./login-api";
 
+function errorLog(error){
+    console.log("Error :", error);
+    console.log("Status: ", error.response?.status);
+    console.log("details :", error.response?.data);
+}
+
 export async function GetWallets(){
     try{
         const response = await api.get(
@@ -8,9 +14,7 @@ export async function GetWallets(){
         );
         return response.data
     } catch (error) {
-        console.log("Error :", error);
-        console.log("Status: ", error.response?.status);
-        console.log("details :", error.response?.data);
+        errorLog(error);
     }
 }
 
@@ -21,9 +25,21 @@ export async function  SetWallet(data) {
             data
         )
     } catch (error) {
-        console.log("Error: ", error);
-        console.log("Status: ", error.response?.status);
-        console.log("details :", error.response?.data);
-        throw (error)
+        errorLog(error);
+        throw (error);
+    }
+}
+
+export async function DeleteWallet(id, force) {
+    try{
+        const response = await api.delete(
+            `/wallet/${id}`,
+            {
+                params: {force},
+            }
+        );
+    }catch(error){
+        errorLog(error);
+        return (error?.response);
     }
 }

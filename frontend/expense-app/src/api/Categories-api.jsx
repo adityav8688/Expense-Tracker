@@ -42,10 +42,9 @@ export async function DelCategory(id, force) {
         return response.data;
     }catch (error){
         if(error.response?.status === 409 && error.response?.data?.detail?.message){
-            alert("409 it is");
+            return (error.response);
         }
         errorLog(error)
-        throw(error.response?.data)
     }
 }
 

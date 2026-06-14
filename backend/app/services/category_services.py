@@ -90,7 +90,7 @@ async def remove_category(category_id: int, db: AsyncSession, uid: int, force: b
 
         if ex_transactions > 0 and not force:
             raise HTTPException(status_code=409, detail={
-                    "message": f"Category contains {ex_transactions} transactions.",
+                    "message": f"This category contains {ex_transactions} transactions. They will also be deleted.",
                     "requires_confirmation": True
                 }
             )

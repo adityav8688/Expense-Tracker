@@ -105,7 +105,7 @@ async def remove_wallet(id: int, db: AsyncSession, uid: int, force: bool):
 
         if ex_transactions > 0 and not force:
             raise HTTPException(status_code=409, detail={
-                "message": f"Wallet contains {ex_transactions} transactions.",
+                "message": f"This wallet contains {ex_transactions} transactions. They will also be deleted.",
                 "requires_confirmation": True
             })
         
