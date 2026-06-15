@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { GetTransactions } from "../api/Transactions-api";
 
 export default function Transactions(){
     const [data, setData] = useState([])
+
+    const navigate = useNavigate();
 
     useEffect(() => {        
         async function fetchTransactions() {
@@ -16,6 +19,7 @@ export default function Transactions(){
     }, []);
     return (
         <>
+            <button onClick={() => navigate("/add_transaction")}>+ Add</button>
             <table>
                 <tbody>
                     <tr>
@@ -23,6 +27,7 @@ export default function Transactions(){
                         <th>Category</th>
                         <th>Type</th>
                         <th>Title</th>
+                        <th>Amount</th>
                         <th>Date</th>
                     </tr>
                     {data.map((transaction, index) => (
@@ -31,7 +36,15 @@ export default function Transactions(){
                             <td>{transaction.category_id}</td>
                             <td>{transaction.type}</td>
                             <td>{transaction.title}</td>
+                            <td>{transaction.amount}</td>
                             <td>{new Date(transaction.transaction_date).toLocaleDateString('en-GB')}</td>
+                            <td>
+                                <button
+                                style={{backgroundColor:"red"}}
+                                >
+                                Delete
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
