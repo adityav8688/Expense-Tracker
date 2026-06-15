@@ -18,8 +18,8 @@ async def list_transactions(db: AsyncSession, uid: int):
 
 async def create_transaction(transaction: CreateTransaction, db: AsyncSession, uid: int):
     try:
-        c_query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.name == transaction.category))
-        w_query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.name == transaction.wallet))
+        c_query = await db.execute(select(Categories).where(Categories.user_id == uid, Categories.id == transaction.categoryId))
+        w_query = await db.execute(select(Wallets).where(Wallets.user_id == uid, Wallets.id == transaction.walletId))
         category = c_query.scalar_one_or_none()
         wallet = w_query.scalar_one_or_none()
 

@@ -11,19 +11,19 @@ class TransactionInfo(BaseModel):
     type: exptype
     amount: float
     title: str
-    description: str | None
-    transaction_date: date | None
+    description: str
+    transaction_date: date 
 
 class CreateTransaction(BaseModel):
-    category: Optional[str | None] = None
-    wallet: str
+    categoryId: int
+    walletId: int
     type: str
     amount: float
     title: str
-    description: str | None
-    transaction_date: Optional[date] = None
+    description: Optional[str | None]
+    transaction_date: Optional[date | None] = date.today()
 
-class UpdateTransaction(BaseModel):
+class UpdateTransaction(BaseModel): 
     # category: Optional[str] = None
     # wallet: Optional[str] = None
     amount: Optional[float] = None
